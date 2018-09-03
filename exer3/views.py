@@ -129,10 +129,10 @@ def add1(request):
             name = form['name'].value()
             subject = form['subject_list'].value()
             new1 = get_object_or_404(Section, name=subject)
-            new = Student.objects.get(name=name)
-            if new.exists():
-            	new = new.name
-            	new1 = Enrollment.objects.create(student=new, section= new1)
+            new3 = Student.objects.filter(name=name)
+            if new3.exists():
+            	new = Student.objects.get(name=name)
+            	new1 = Enrollment(student=new, section= new1)
             	new1.save()
             	sect = Enrollment.objects.all()
             	form = SearchForm()
