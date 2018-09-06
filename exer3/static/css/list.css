@@ -46,7 +46,6 @@ a span{
 	margin: auto;
     width: 50%;
     padding: 10px;
-    text-align: center;
 }
 
 
@@ -323,4 +322,29 @@ body {
   padding: 20px;
   background: #fff;
   min-height: 460px;
+}
+
+/* navigation bar */
+.topnav {
+  overflow: hidden;
+  background-color: #0000ff;
+}
+
+.topnav a {
+  float: left;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 25pt;
+  font-family: 'Lobster';
+}
+
+.topnav a:hover {
+  color: black;
+}
+
+.topnav a.active {
+  color: white;
+  text-decoration: underline;
 }

@@ -1,0 +1,39 @@
+{% extends 'exer3/base.html' %}
+
+{% block content %}
+
+{% if user.is_authenticated %}
+
+<form method="post" action="" style="text-align: center;" >
+   {% csrf_token %}
+  <label class="welcome"><b>Welcome <br><br>{{ user.username }}<br></b></label>
+  <br><br>
+</form>
+{% else %}
+<form method="post" action="{% url 'login' %}" style="text-align:center;">
+   {% if form.errors %}
+              <p>Invalid email or password! Please try again.</p>
+    {% endif %}
+  <label><b>Sign up</b></label>
+    {% csrf_token %}
+  <div class="container">
+    <table>
+        <tr>
+            {{ form.username.label_tag }}
+            {{ form.username }}<br>
+        </tr>
+        <tr>
+            {{ form.password.label_tag }}
+            {{ form.password }}
+        </tr>
+        </table>
+    <div style="text-align:center;">
+    <button class="btn1" type="submit">Login</button>
+    </div>
+    <br>
+    <span class="psw">No Account Yet?<a href="{% url 'signup' %}">Create an account</a></span>
+  </div>
+</form>
+{% endif %}
+
+{% endblock %}

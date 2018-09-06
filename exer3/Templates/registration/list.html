@@ -11,7 +11,7 @@
 <button class="btn1" type="submit">Logout</button>
 </form>
 {% else %}
-<form method="post" action="{% url 'check' %}" style="text-align:center;">
+<form method="post" action="{% url 'login' %}" style="text-align:center;">
    {% if form.errors %}
               <p>Invalid email or password! Please try again.</p>
     {% endif %}

@@ -21,6 +21,6 @@ urlpatterns = [
     path('create/', views.create, name='create'),
     path('search/subject', views.search1, name='search1'),
     path('list/', views.software, name='software'),
-    url(r'^account/$', views.check, name='check'),
-    url(r'^logout/$', views.logout_view, name='logout_view'),
+    #url(r'^account/$', views.login, name='login'),   
+    #url(r'^logout/$', views.logout_view, name='logout_view'),
 ]

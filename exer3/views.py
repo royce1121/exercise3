@@ -22,11 +22,11 @@ def create(request):
 		user.first_name = first_name
 		user.last_name = last_name
 		user.save()
-		return render(request, 'exer3/list.html', {})
+		return render(request, 'registration/login.html', {})
 
-def logout_view(request):
-    logout(request)
-    return render(request, 'exer3/list.html', {})
+#def logout_view(request):
+#    logout(request)
+#    return render(request, 'exer3/list.html', {})
 
 def software(request):
 	first = Student.objects.all()
@@ -49,10 +49,11 @@ def subject(request, pk):
 def signup(request):
     return render(request, 'exer3/LoginPage.html', {})
 
+
 def list(request):
 	#first = Student.objects.filter(section__name='First')
 	sect = Section.objects.all()
-	return render(request, 'exer3/student.html', {'sect': sect})
+	return render(request, 'registration/login.html', {'sect': sect})
 	#return render(request, 'exer3/list.html', {'first': first})
 
 def check(request):
@@ -67,7 +68,7 @@ def check(request):
                 first = Student.objects.filter(section__name='Hardware')
                 return render(request, 'exer3/profile.html', {'first': first})
         else:
-        	return render(request, 'exer3/list.html', {})
+        	return render(request, 'registration/list.html', {})
 
 def student(request):
     stud = Student.objects.all()
@@ -75,6 +76,7 @@ def student(request):
     form = SearchForm()
     return render(request, 'exer3/student.html', {'stud': stud , 'sect': sect})
 
+@login_required
 def profile(request):   
     return render(request, 'exer3/profile.html', {})
     
@@ -183,3 +185,16 @@ def edit1(request, pk):
             sect = Enrollment.objects.all()
             form = SearchForm()
             return render(request, 'exer3/student.html', {'sect': sect})
+
+
+def server_error(request):
+    return render(request, 'errors/500.html')
+ 
+def not_found(request):
+    return render(request, 'errors/404.html')
+ 
+def permission_denied(request):
+    return render(request, 'errors/403.html')
+ 
+def bad_request(request):
+    return render(request, 'errors/400.html')
