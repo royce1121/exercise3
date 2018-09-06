@@ -20,6 +20,9 @@
 		
 		</div>
 		<div class="col-md-6">
+			{% if error_message %}
+			<p>{{error_message}}</p>
+			{% endif %}
 	<table>
 	<tr>
 		<th>Name</th>

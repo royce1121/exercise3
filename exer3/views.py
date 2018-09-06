@@ -22,16 +22,23 @@ def create(request):
 		user.first_name = first_name
 		user.last_name = last_name
 		user.save()
-		return render(request, 'registration/login.html', {})
-
+		user = authenticate(username=username, password=password)
+		if user:
+			if user.is_active:
+				auth_login(request, user)
+				first = Student.objects.filter(section__name='Hardware')
+				return render(request, 'exer3/profile.html', {'first': first})
+        
 #def logout_view(request):
 #    logout(request)
 #    return render(request, 'exer3/list.html', {})
 
+@login_required
 def software(request):
 	first = Student.objects.all()
 	return render(request, 'exer3/software.html', {'first':first})
 
+@login_required
 def subject(request, pk):
     post = get_object_or_404(Section, pk=pk)
     if post.name == "Software":
@@ -56,6 +63,7 @@ def list(request):
 	return render(request, 'registration/login.html', {'sect': sect})
 	#return render(request, 'exer3/list.html', {'first': first})
 
+@login_required
 def check(request):
     if request.POST:
         username = request.POST['user']
@@ -70,6 +78,7 @@ def check(request):
         else:
         	return render(request, 'registration/list.html', {})
 
+@login_required
 def student(request):
     stud = Student.objects.all()
     sect = Enrollment.objects.all()
@@ -79,26 +88,40 @@ def student(request):
 @login_required
 def profile(request):   
     return render(request, 'exer3/profile.html', {})
-    
+ 
+@login_required   
 def remove(request, pk):
-    post = get_object_or_404(Enrollment, pk=pk)
-    post = Student.objects.filter(name=post.student)
-    post.delete()
-    sect = Enrollment.objects.all()
-    form = SearchForm()
-    return render(request, 'exer3/student.html', {'sect': sect})
+	try:
+		post = get_object_or_404(Enrollment, pk=pk)
+		post = Student.objects.filter(name=post.student)
+		post.delete()
+		sect = Enrollment.objects.all()
+		form = SearchForm()
+		return render(request, 'exer3/student.html', {'sect': sect})
+	except:
+		sect = Enrollment.objects.all()
+		form = SearchForm()
+		return render(request, 'exer3/student.html', {'sect': sect, 'error_message':"Error, Object missing or already deleted."})
 
+@login_required
 def remove1(request, pk):
-    post = get_object_or_404(Student, pk=pk)
-    post.delete()
-    first = Student.objects.all()
-    form = SearchForm()
-    return render(request, 'exer3/software.html', {'first': first, 'form': form})
+	try:
+		post = get_object_or_404(Student, pk=pk)
+		post.delete()
+		first = Student.objects.all()
+		form = SearchForm()
+		return render(request, 'exer3/software.html', {'first': first, 'form': form})
+	except:
+		first = Student.objects.all()
+		form = SearchForm()
+		return render(request, 'exer3/software.html', {'first': first, 'error_message':"Error, Object missing or already deleted."})
 
+@login_required
 def new(request):
     form = NameForm()
     return render(request, 'exer3/new.html', {'form': form})
 
+@login_required
 def search(request):
     if request.POST:
         search = request.POST['srch']
@@ -112,6 +135,7 @@ def search(request):
         	form = SearchForm()
         	return render(request, 'exer3/student.html', {'sect': sect,'form': form})
 
+@login_required
 def search1(request):
     if request.POST:
         search = request.POST['srch']
@@ -119,11 +143,13 @@ def search1(request):
         form = SearchForm()
         return render(request, 'exer3/software.html', {'first': first}, {'form': form})
 
+@login_required
 def add(request):
     if request.POST:
         form = RegForm()
         return render(request, 'exer3/add.html', {'form': form})
 
+@login_required
 def add1(request):
     if request.method == 'POST':
         form = RegForm(request.POST)
@@ -147,11 +173,13 @@ def add1(request):
             	form = SearchForm()
             	return render(request, 'exer3/student.html', {'sect': sect})
 
+@login_required
 def add2(request):
     if request.POST:
         form = SubAdd()
         return render(request, 'exer3/add2.html', {'form': form})
 
+@login_required
 def add3(request):
     if request.method == 'POST':
         form = SubAdd(request.POST)
@@ -163,29 +191,42 @@ def add3(request):
             form = SearchForm()
             return render(request, 'exer3/software.html', {'first': first, 'form': form})
 
+@login_required
 def edit(request, pk):
-    form = RegForm()
-    edit1 = get_object_or_404(Enrollment, pk=pk) 
-    edit = Student.objects.filter(name=edit1.student)
-    return render(request, 'exer3/edit.html', {'edit1': edit1, 'edit': edit, 'form': form})
+	form = RegForm()
+	try:
+		edit1 = get_object_or_404(Enrollment, pk=pk) 
+		edit = Student.objects.filter(name=edit1.student)
+		return render(request, 'exer3/edit.html', {'edit1': edit1, 'edit': edit, 'form': form})
+	except:
+		sect = Enrollment.objects.all()
+		form = SearchForm()
+		return render(request, 'exer3/student.html', {'sect': sect, 'error_message':"Error, Object missing or already deleted."})
 
+@login_required
 def edit1(request, pk):
-    edit1 = get_object_or_404(Enrollment, pk=pk)
-    edit = Student.objects.filter(name=edit1.student)
-    if request.method == 'POST':
-        form = RegForm(request.POST)
-        if form.is_valid():            
-            name1 = form['name'].value()
-            subject = form['subject_list'].value()
-            new1 = get_object_or_404(Section, name=subject)  
-            edit.delete()  
-            new = Student.objects.create(name=name1)
-            new1 = Enrollment.objects.create(student=new, section= new1)
-            new1.save()
-            sect = Enrollment.objects.all()
-            form = SearchForm()
-            return render(request, 'exer3/student.html', {'sect': sect})
+	try:
+		edit1 = get_object_or_404(Enrollment, pk=pk) 
+		edit = Student.objects.filter(name=edit1.student)
+		if request.method == 'POST':
+			form = RegForm(request.POST)
+			if form.is_valid():            
+				name1 = form['name'].value()
+				subject = form['subject_list'].value()
+				new1 = get_object_or_404(Section, name=subject)  
+				edit.delete()  
+				new = Student.objects.create(name=name1)
+				new1 = Enrollment.objects.create(student=new, section= new1)
+				new1.save()
+				stud = Student.objects.all()
+				sect = Enrollment.objects.all()
+				form = SearchForm()
+				return render(request, 'exer3/student.html', {'stud': stud , 'sect': sect})
 
+	except:
+		sect = Enrollment.objects.all()
+		form = SearchForm()
+		return render(request, 'exer3/student.html', {'sect': sect , 'error_message':"Error, Object missing or already deleted."})
 
 def server_error(request):
     return render(request, 'errors/500.html')
